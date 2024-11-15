@@ -1,7 +1,8 @@
 program calculo_de_area_monte_carlo
+use conicas
 use, intrinsic :: iso_fortran_env, only: sp => real32, dp => real64, i4 => int32, i8 => int64
 implicit none
-real(kind=dp) a , b , L_x , L_y 
+real(kind=dp) a , b , L_x , L_y , area
 character(len=5) figure
 character(len=100) arg
 
@@ -15,6 +16,8 @@ if ( figure=='elips') then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
     call get_command_argument( 5 , arg ) ; read(arg,*) b ! Lê o segundo argumento
     call write_params( L_x , L_y , figure , a , b )
+    call elipse( a , b , L_x , L_y , area )
+    print*, area
     
 
 else if ( figure=='circu' .or. figure=='circl' ) then
