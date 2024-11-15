@@ -29,6 +29,8 @@ else if ( figure=='hiper' ) then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
     call get_command_argument( 5 , arg ) ; read(arg,*) b ! Lê o segundo argumento
     call write_params( L_x , L_y , figure , a , b )
+    call hiperbole( a , b , L_x , L_y , area )
+    print*, area
     
 else if ( figure=='parab' ) then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
