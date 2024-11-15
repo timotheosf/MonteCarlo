@@ -36,7 +36,8 @@ else if ( figure=='parab' ) then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
     b=0.d0
     call write_params( L_x , L_y , figure , a , b )
-    
+    call parabola( a , L_x , L_y , area )
+    print*, area
 endif
 
 contains
