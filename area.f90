@@ -10,7 +10,7 @@ call get_command_argument( 1 , arg ) ; read(arg,*) L_x ! Lê o tamanho do sistem
 call get_command_argument( 2 , arg ) ; read(arg,*) L_y ! Lê o tamanho do sistema em y
 
 
-call get_command_argument( 3 , figure )
+call get_command_argument( 3 , figure ) ! Lê a figura do sistema
 
 if ( figure=='elips') then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
@@ -18,13 +18,14 @@ if ( figure=='elips') then
     call write_params( L_x , L_y , figure , a , b )
     call elipse( a , b , L_x , L_y , area )
     print*, area
-    
 
 else if ( figure=='circu' .or. figure=='circl' ) then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
     b=0.d0
     call write_params( L_x , L_y , figure , a , b )
-    
+    call elipse( a , a , L_x , L_y , area )
+    print*, area
+
 else if ( figure=='hiper' ) then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
     call get_command_argument( 5 , arg ) ; read(arg,*) b ! Lê o segundo argumento
@@ -38,6 +39,7 @@ else if ( figure=='parab' ) then
     call write_params( L_x , L_y , figure , a , b )
     call parabola( a , L_x , L_y , area )
     print*, area
+
 endif
 
 contains
