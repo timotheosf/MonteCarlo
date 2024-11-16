@@ -2,7 +2,6 @@ program gerador_de_formato_para_determinar_area
 use, intrinsic :: iso_fortran_env, only: sp => real32, dp => real64, i4 => int32, i8 => int64
 implicit none
 real(kind=dp) :: x , y , t=0.d0 , delta_t = 5.d-2
-integer(kind=i4) :: i , j
 open(1,file='data')
 do
     if ( 0. <= t .and. t <= 0.5 ) then
