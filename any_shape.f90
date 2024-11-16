@@ -4,7 +4,7 @@ use, intrinsic :: iso_fortran_env, only: sp => real32, dp => real64, i4 => int32
 implicit none
 ! Variáveis do módulo
 real(kind=dp) :: x_r , y_r
-integer(kind=i4) :: num_trials=1000000 , num_hits=0 , i
+integer(kind=i4) :: num_trials=100000 , num_hits=0 , i
 ! Gerador de numéros
 integer(i4) :: seed = 294727492 
 type(rndgen) :: generator
@@ -37,31 +37,29 @@ subroutine any( L_x , L_y , PATH , area )
     character(len=10) PATH
     integer(kind=i4) :: i , j , size , num_intersec
     real(kind=dp) , allocatable :: x(:) , y(:)
-    real(kind=dp) :: P_0_x , P_0_y , a_r , a_j , x_comum
+    open(3,file='num_trials')
+    open(2,file='num_hits')
     call generator%init(seed)
-    P_0_x = -0.5*L_x ; P_0_y = -0.5*L_y
     call read_array_from_file( PATH , x , y , size )
     do i = 1 , num_trials
         x_r = generator%real( -0.5*L_x , 0.5*L_x ) ! Gera duplas de números ao longo de todo o sistema
         y_r = generator%real( -0.5*L_y , 0.5*L_y )
         num_intersec = 0 ! Reseta a contagem de interseções com a fronteira
-        a_r = (y_r-P_0_y)/(x_r-P_0_x) ! Inclinação da reta que liga P_0 a P_r
         do j = 1 , size-1
-            ! Só é necessário vasculhar entre os pontos que são menores que x_r
-            if ( x(j) <= x_r ) then
-                a_j = (y(j+1)-y(j))/(x(j+1)-(j)) ! Inclinação da reta que liga (x_j,y_j) a (x_j+1,y_j+1)
-                ! X comum entre as retas que ligam (x_j,y_j) a (x_j+1,y_j+1) e P_0 a P_r
-                if ( a_r/=a_j ) then ! Evitar divisão por zero
-                x_comum = (y(j)-P_0_y+a_r*P_0_x-a_j*x(j))/(a_r-a_j)
-                ! As retas têm uma interseção que deve ser contabilizada se x_comum está entre P_0_x e x_r
-                if ( P_0_x <= x_comum .and. x_comum <= x_r ) num_intersec = num_intersec + 1
-                endif
+            ! Para haver interceção entre quaisquer poligonais que ligam o ponto P_r a um ponto fixo P_0 externo à fronteira
+            ! com a fronteira, devemos ter que a distância em x de P_r a P_0 deve ser maior do que a de P_0_x à fronteira (dist. perpendicular)
+            if ( x(j) <= x_r .and. y(j)/=y(j+1) ) then
+                ! Para que isso valha, de fato, devemos garantir também que P_r tem o mesmo y que o ponto P_j da fronteira
+                ! considerando, é claro, a precisão característica dos dados da tabela
+                if ( (y(j) <= y_r .and. y_r <= y(j+1)) .or. (y(j+1) <= y_r .and. y_r <= y(j)) ) num_intersec = num_intersec + 1
             endif
         enddo
-        ! A paridade do número de interseções da reta P_0 a (x_r,y_r) determina se o ponto P_r é interno ou externo ao conjunto
+        ! A paridade do número de interseções das poligonais determina se o ponto P_r é interno ou externo ao conjunto
         ! para um número par, quer dizer que a reta corta a fronteira 'entrando' e 'saindo', de modo que é um ponto externo
         ! para um número ímpar, quer dizer que a reta corta a fronteira apenas 'saindo', de modo que é um ponto interno
         if ( mod(num_intersec,2)/=0 ) num_hits=num_hits+1
+        if ( mod(num_intersec,2)/=0 ) write(2,*) x_r , y_r
+        if ( mod(num_intersec,2)==0 ) write(3,*) x_r , y_r
     enddo
     area = real(num_hits,kind=dp)/real(num_trials,kind=dp) * L_x * L_y 
 end subroutine
