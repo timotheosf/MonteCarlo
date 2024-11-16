@@ -55,6 +55,7 @@ else if ( first_char=='f' ) then
 
 else if ( figure=='data_' ) then
     call get_command_argument( 4 , PATH )
+    call write_params( L_x , L_y , PATH , 0d0 , 0d0 , 0d0 )
     call any( L_x , L_y , PATH , area )
     print*, area
 endif
