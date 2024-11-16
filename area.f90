@@ -47,8 +47,8 @@ else if ( figure=='parab' ) then
 
 else if ( first_char=='f' ) then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
-    call get_command_argument( 4 , arg ) ; read(arg,*) b ! Lê o segundo argumento
-    call get_command_argument( 4 , arg ) ; read(arg,*) c ! Lê o terceiro argumento
+    call get_command_argument( 5 , arg ) ; read(arg,*) b ! Lê o segundo argumento
+    call get_command_argument( 6 , arg ) ; read(arg,*) c ! Lê o terceiro argumento
     call write_params( L_x , L_y , figure , a , b , c )
     call area_under_f( a , b , c , figure , L_x , L_y , area )
     print*, area
