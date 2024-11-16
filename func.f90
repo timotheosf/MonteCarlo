@@ -1,40 +1,44 @@
-module functions
+module func
+use rndgen_mod
 use, intrinsic :: iso_fortran_env, only: sp => real32, dp => real64, i4 => int32, i8 => int64
 implicit none
-public :: f_
-type :: f_
-    real(kind=dp) :: x , a , b , c 
-    contains
-        procedure :: linear_ 
-        procedure :: quad_
-        procedure :: sin_
-        procedure :: cos_
-end type f_
+! Variáveis do módulo
+real(kind=dp) :: x_r , y_r
+integer(kind=i4) :: num_trials=1000000 , num_hits=0 , i
+! Gerador de numéros
+integer(i4) :: seed = 294727492 
+type(rndgen) :: generator
+! Privando as variáveis
+private x_r , y_r , num_hits , num_trials , seed , generator
 
 contains
 
-    function linear_(this) result(f__)
-        class(f_), intent(in) :: this
-        real(kind=dp) f__
-        f__ = this%x * this%a + this%b
-    end function linear_
+function f_( x , a , b , c , fig ) result( result ) 
+    real(kind=dp) , intent(in) :: x , a , b , c
+    real(kind=dp) :: result
+    character(len=5) , intent(in) :: fig
+    if ( fig=='f_sin' ) then
+        result = a*sin(b*x+c)
+    else if ( fig=='f_cos') then
+        result = a*cos(b*x+c)
+    else if ( fig=='f_lin') then
+        result = a*x+b
+    else if ( fig=='f_qua') then
+        result = a*x**2+b*x+c
+    endif
+end function f_
 
-    function quad_(this) result(f__)
-        class(f_), intent(in) :: this
-        real(kind=dp) f__
-        f__ = this%a*this%x**2+this%b*this%x+this%c
-    end function quad_
-
-    function sin_(this) result(f__)
-        class(f_), intent(in) :: this
-        real(kind=dp) f__
-        f__ = this%a*sin(this%b*this%x+this%c)
-    end function sin_
-
-    function cos_(this) result(f__)
-        class(f_), intent(in) :: this
-        real(kind=dp) f__
-        f__ = this%a*cos(this%b*this%x+this%c)
-    end function cos_
-
+subroutine area_under_f( a , b , c , fig , L_x , L_y , area )
+    real(kind=dp), intent(in) :: a , b , c , L_x , L_y
+    real(kind=dp), intent(out) :: area
+    character(len=5) , intent(in) :: fig
+    call generator%init(seed)
+    do i = 1 , num_trials
+        x_r = generator%real( -0.5*L_x , 0.5*L_x ) ! Gera duplas de números ao longo de todo o sistema
+        y_r = generator%real( -0.5*L_y , 0.5*L_y )
+        if ( (f_( x_r , a , b , c , fig ) <= y_r .and. y_r <= 0. ) .or. ( 0. <= y_r .and. y_r <= f_( x_r , a , b , c , fig )))& ! quebra de linha para o gfortran não reclamar
+         num_hits = num_hits + 1
+    enddo
+    area = real(num_hits,kind=dp)/real(num_trials,kind=dp) * L_x * L_y 
+end subroutine area_under_f
 end module
