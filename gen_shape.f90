@@ -23,10 +23,10 @@ do
         x = -0.5 ; y = 4 - t
         write(1,*) x , y
     else if ( 6.5 <= t .and. t <= 7.5 ) then
-        x = -0.5+(t-6.5) ; y = -1.5
+        x = -0.5+(t-6.5) ; y = -2.5
         write(1,*) x , y
     else if ( 7.5 <= t .and. t <= 9.5 ) then
-        x = 0.5 ; y = -1.5+(t-7.5)
+        x = 0.5 ; y = -2.5+(t-7.5)
         write(1,*) x , y
     else if ( 9.5 <= t .and. t <= 10.5 ) then
         x = 0.5 + (t-9.5) ; y = -0.5
