@@ -2,3 +2,6 @@
 *.txt
 *.mod
 *.out
+data
+num_hits
+num_trials

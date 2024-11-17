@@ -26,7 +26,7 @@ if ( figure=='elips') then
 
 else if ( figure=='circu' .or. figure=='circl' ) then
     call get_command_argument( 4 , arg ) ; read(arg,*) a ! Lê o primeiro argumento
-    b=0.d0
+    b=a
     call write_params( L_x , L_y , figure , a , b , 0.d0 )
     call elipse( a , a , L_x , L_y , area )
     print*, area
@@ -59,6 +59,8 @@ else if ( figure=='data_' ) then
     call any( L_x , L_y , PATH , area )
     print*, area
 endif
+
+call system('sophia -r graph.py &')
 
 contains
 subroutine write_params( L_x , L_y , fig , a , b , c )

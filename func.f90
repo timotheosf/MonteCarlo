@@ -4,7 +4,7 @@ use, intrinsic :: iso_fortran_env, only: sp => real32, dp => real64, i4 => int32
 implicit none
 ! Variáveis do módulo
 real(kind=dp) :: x_r , y_r
-integer(kind=i4) :: num_trials=1000000 , num_hits=0 , i
+integer(kind=i4) :: num_trials=100000 , num_hits=0 , i
 ! Gerador de numéros
 integer(i4) :: seed = 294727492 
 type(rndgen) :: generator
@@ -37,12 +37,18 @@ subroutine area_under_f( a , b , c , fig , L_x , L_y , area )
     real(kind=dp), intent(in) :: a , b , c , L_x , L_y
     real(kind=dp), intent(out) :: area
     character(len=5) , intent(in) :: fig
+    open(3,file='num_trials')
+    open(2,file='num_hits')
     call generator%init(seed)
     do i = 1 , num_trials
         x_r = generator%real( -0.5*L_x , 0.5*L_x ) ! Gera duplas de números ao longo de todo o sistema
         y_r = generator%real( -0.5*L_y , 0.5*L_y )
-        if ( (f_( x_r , a , b , c , fig ) <= y_r .and. y_r <= 0. ) .or. ( 0. <= y_r .and. y_r <= f_( x_r , a , b , c , fig )))& ! Quebra de linha para o gfortran não reclamar
-         num_hits = num_hits + 1 ! Conta para as regiões em que f_ é negativa ou positiva
+        if ( (f_( x_r , a , b , c , fig ) <= y_r .and. y_r <= 0. ) .or. ( 0. <= y_r .and. y_r <= f_( x_r , a , b , c , fig ))) then
+            num_hits = num_hits + 1 ! Conta para as regiões em que f_ é negativa ou positiva
+            write(2,*) x_r , y_r
+        else
+            write(3,*) x_r , y_r
+        endif
     enddo
     area = real(num_hits,kind=dp)/real(num_trials,kind=dp) * L_x * L_y 
 end subroutine area_under_f
