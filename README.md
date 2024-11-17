@@ -34,7 +34,7 @@ Enquanto o tamanho do sistema, *a*, *b* e *c* aceitam qualquer número real, o p
 
 O programa `gen_shape` apenas gera o formato de uma cruz e coloca numa lista de dados `data` como um exemplo para o módulo `any_shape`.
 
-![Exemplo de resultado com o programa](imagens/minha_imagem.png)
+![Exemplo de resultado com o programa](cross.png)
 
 Para analisar graficamente o que o programa está fazendo, acrescente ao comando de execução:
 ```zsh
