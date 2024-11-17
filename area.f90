@@ -60,7 +60,6 @@ else if ( figure=='data_' ) then
     print*, area
 endif
 
-call system('sophia -r graph.py &')
 
 contains
 subroutine write_params( L_x , L_y , fig , a , b , c )
